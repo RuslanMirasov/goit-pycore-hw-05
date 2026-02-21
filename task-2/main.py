@@ -1,14 +1,14 @@
 import re
 from typing import Callable
 
-# Генерує всі дійсні числа з тексту (включно з від'ємними).
+# Генеруємо всі дійсні числа з тексту (включно з від'ємними).
 def generator_numbers(text: str):
     pattern = r"-?\d+(?:\.\d+)?"
 
     for number in re.findall(pattern, text):
         yield float(number)
 
-# Обчислює загальну суму чисел.
+# Обчислюємо загальну суму чисел.
 def sum_profit(text: str, func: Callable):
     total = 0
 

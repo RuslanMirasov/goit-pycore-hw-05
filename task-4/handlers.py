@@ -1,48 +1,58 @@
+from functools import wraps
+
+# Декоратор для обробки помилок введення користувача
+def input_error(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+
+        except ValueError:
+            return "Give me name and phone please."
+
+        except KeyError:
+            return "Contact not found."
+
+        except IndexError:
+            return "Enter user name."
+
+    return inner
+
+# Функція розбору введеної команди
 def parse_input(user_input):
    cmd, *args = user_input.split()
    cmd = cmd.strip().lower()
    return cmd, *args
 
-# add_contact handler
+# Обробник команди додавання контакту
+@input_error
 def add_contact(args, contacts):
-   if len(args) != 2:
-      return "Invalid arguments."
-   
-   name, phone = args
-   contacts[name] = phone
-   return "Contact added."
+    name, phone = args
+    contacts[name] = phone
+    return "Contact added."
 
-# change_contact handler
+# Обробник команди зміни контакту
+@input_error
 def change_contact(args, contacts):
-   if len(args) != 2:
-      return "Invalid arguments."
+    name, phone = args
+    contacts[name] = phone
+    return "Contact updated."
 
-   name,phone = args
-   if name in contacts:
-      contacts[name] = phone
-      return "Contact updated."
-   else:
-      return "Contact not found!"
-
-# show_phone handler
+# Обробник команди перегляду телефону контакту
+@input_error
 def show_phone(args, contacts):
-   if len(args) != 1:
-      return "Invalid arguments."
+    name = args[0]
+    return contacts[name]
 
-   name = args[0]
-
-   if name in contacts:
-      return contacts[name]
-   else:
-      return "Contact not found!"
-
-# show_all handler    
+# Обробник команди виведення всіх контактів  
+@input_error
 def show_all(contacts):
-   if not contacts:
-      return "No contacts found."
+    # Якщо словник контактів порожній
+    if not contacts:
+        return "No contacts found."
 
-   result = ""
-   for name, phone in contacts.items():
-      result += f"{name}: {phone}\n"
+    result = ""
+    for name, phone in contacts.items():
+        result += f"{name}: {phone}\n"
 
-   return result.strip()
+    return result.strip()
